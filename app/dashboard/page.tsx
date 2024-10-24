@@ -126,6 +126,16 @@ export default function Page() {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.refresh(); // Force a refresh of the current page
+      router.push('/auth/login'); // Manually redirect
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -167,7 +177,7 @@ export default function Page() {
               </div>
             </div>
             <button
-              onClick={() => supabase.auth.signOut()}
+              onClick={handleSignOut}
               className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700"
             >
               Đăng xuất

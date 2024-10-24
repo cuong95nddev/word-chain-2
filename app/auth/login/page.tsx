@@ -64,8 +64,6 @@ export default function LoginPage() {
             total_games: 0,
             total_wins: 0,
             total_score: 0,
-            highest_score: 0,
-            longest_streak: 0,
           });
         }
 
