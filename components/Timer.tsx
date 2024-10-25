@@ -3,7 +3,7 @@ import { formatTime } from '@/lib/utils';
 
 interface TimerProps {
   duration: number;
-  onTimeout: () => void;
+  onTimeout?: () => void;
   isActive: boolean;
 }
 
@@ -17,7 +17,7 @@ export default function Timer({ duration, onTimeout, isActive }: TimerProps) {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          onTimeout();
+          onTimeout?.();
           return 0;
         }
         return prev - 1;

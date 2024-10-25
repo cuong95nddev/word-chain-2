@@ -1,16 +1,21 @@
 import React from 'react';
-import { Player } from '@/types';
+import { Game, Player } from '@/types';
 import UserAvatar from './UserAvatar';
+import Timer from '@/components/Timer';
 
 interface PlayerStatsProps {
   player: Player;
+  game: Game;
   isCurrentTurn: boolean;
+  isYourTurn: boolean;
   onlineStatus?: 'online' | 'offline' | 'away';
 }
 
 export default function PlayerStats({
   player,
+  game,
   isCurrentTurn,
+  isYourTurn,
   onlineStatus = 'online',
 }: PlayerStatsProps) {
   return (
@@ -68,11 +73,9 @@ export default function PlayerStats({
       </div>
 
       {/* Progress bar for timer when it's player's turn */}
-      {isCurrentTurn && (
+      {isCurrentTurn && !isYourTurn && (
         <div className="mt-3">
-          <div className="w-full bg-gray-200 rounded-full h-1.5">
-            <div className="bg-blue-500 h-1.5 rounded-full animate-timer" />
-          </div>
+          <Timer duration={game.settings.time_limit} isActive={isCurrentTurn} />
         </div>
       )}
 

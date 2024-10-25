@@ -14,7 +14,7 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
   const [inputWord, setInputWord] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { game } = useGameState(gameId, "gameboard");
+  const { game } = useGameState(gameId, 'gameboard');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +95,9 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
             <PlayerStats
               key={player.id}
               player={player}
+              game={game}
               isCurrentTurn={game.current_player_id === player.id}
+              isYourTurn={isCurrentTurn}
             />
           ))}
         </div>
@@ -208,9 +210,7 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
               {!game.settings.allow_repeat_words && (
                 <li>Không được dùng lại từ đã sử dụng</li>
               )}
-              <li>
-                Thắng cuộc khi đạt: {game.settings.win_points} điểm
-              </li>
+              <li>Thắng cuộc khi đạt: {game.settings.win_points} điểm</li>
             </ul>
           </div>
         </div>
