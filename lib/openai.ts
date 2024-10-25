@@ -2,24 +2,27 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
-  dangerouslyAllowBrowser: true
+  dangerouslyAllowBrowser: true,
 });
 
-export async function validateWord(
-  word: string,
-): Promise<boolean> {
+export async function validateWord(word: string): Promise<boolean> {
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o',
+      response_format: {
+        type: 'json_object',
+      },
       messages: [
         {
-          role: 'system',
-          content:
-            "You are a helpful assistant that verifies if a Vietnamese word exists and has meaning. Reply with only 'true' or 'false'.",
-        },
-        {
           role: 'user',
-          content: `Is "${word}" a valid Vietnamese word?`,
+          content: `Hãy phân tích từ "${word}" và cho biết đây có phải là một từ tiếng Việt có nghĩa hay không.
+Yêu cầu:
+Xác định xem đây có phải là một từ tiếng Việt có nghĩa hay không
+Nếu là từ có nghĩa, hãy cho biết:
+Loại từ (danh từ, động từ, tính từ, etc.)
+Nghĩa chính của từ
+Nếu không phải từ có nghĩa, hãy giải thích lý do
+Trả về kết quả theo định dạng JSON: { "is_valid_word": true/false, "word_type": "loại từ", "meaning": "nghĩa của từ", "explanation": "giải thích thêm nếu cần" }`,
         },
       ],
       temperature: 0.3,
@@ -28,7 +31,8 @@ export async function validateWord(
     console.log(response.choices[0].message.content);
 
     return (
-      response.choices[0].message.content?.toLowerCase() === 'true'
+      JSON.parse(response.choices[0].message.content || '{}')?.is_valid_word ===
+      true
     );
   } catch (error) {
     console.error('Error validating word:', error);
