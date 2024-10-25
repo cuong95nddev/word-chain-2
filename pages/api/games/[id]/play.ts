@@ -106,13 +106,13 @@ export default async function handler(
     // Check for game end conditions
     let gameStatus = game.status;
     let winnerId = null;
-    if (timeElapsed >= game.settings.time_limit) {
-      gameStatus = 'finished';
-      // Find player with highest score
-      const highestScore = Math.max(...players.map((p) => p.score));
-      const winner = players.find((p) => p.score === highestScore);
-      winnerId = winner?.id;
-    }
+    // if (timeElapsed >= game.settings.time_limit) {
+    //   gameStatus = 'finished';
+    //   // Find player with highest score
+    //   const highestScore = Math.max(...players.map((p) => p.score));
+    //   const winner = players.find((p) => p.score === highestScore);
+    //   winnerId = winner?.id;
+    // }
 
     // Update player stats
     const updatedPlayers = players.map((p) => {

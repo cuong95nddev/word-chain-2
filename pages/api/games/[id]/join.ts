@@ -10,7 +10,7 @@ export default async function handler(
   }
 
   const { id } = req.query;
-  const { userId, username } = req.body;
+  const { userId } = req.body;
 
   try {
     const { data: game } = await supabase
@@ -35,6 +35,12 @@ export default async function handler(
       return res.status(400).json({ error: 'Already joined' });
     }
 
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('username')
+      .eq('user_id', userId)
+      .single();
+
     const { data: updatedGame, error } = await supabase
       .from('games')
       .update({
@@ -42,7 +48,7 @@ export default async function handler(
           ...game.players,
           {
             id: userId,
-            name: username,
+            name: profile?.username,
             score: 0,
             is_active: true,
           },

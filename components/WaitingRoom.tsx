@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Game, Player } from '@/types';
 
 interface WaitingRoomProps {
@@ -9,7 +8,6 @@ interface WaitingRoomProps {
 
 export default function WaitingRoom({ game, currentPlayer }: WaitingRoomProps) {
   const [copied, setCopied] = useState(false);
-  const supabase = useSupabaseClient();
   const isHost = game.host_id === currentPlayer.id;
   const inviteLink = `${process.env.NEXT_PUBLIC_BASE_URL}/games/${game.id}`;
 

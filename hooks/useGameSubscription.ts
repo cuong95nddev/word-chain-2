@@ -9,6 +9,10 @@ export function useGameSubscription(
   const supabase = useSupabaseClient();
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const subscription = supabase
       .channel(`game:${gameId}`)
       .on(
@@ -20,6 +24,7 @@ export function useGameSubscription(
           filter: `id=eq.${gameId}`,
         },
         (payload) => {
+          console.log('Game updated:', payload.new, onUpdate);
           onUpdate(payload.new as Game);
         }
       )
@@ -28,5 +33,5 @@ export function useGameSubscription(
     return () => {
       subscription.unsubscribe();
     };
-  }, [gameId, onUpdate, supabase]);
+  }, [gameId, supabase, onUpdate]);
 }

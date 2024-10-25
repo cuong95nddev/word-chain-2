@@ -7,28 +7,28 @@ const openai = new OpenAI({
 
 export async function validateWord(
   word: string,
-  previousWord?: string
 ): Promise<boolean> {
   try {
-    const prompt = `Kiểm tra từ "${word}" có phải là một từ tiếng Việt hợp lệ không?${
-      previousWord
-        ? ` Và từ này có bắt đầu bằng chữ cuối của từ "${previousWord}" không?`
-        : ''
-    }`;
-
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         {
+          role: 'system',
+          content:
+            "You are a helpful assistant that verifies if a Vietnamese word exists and has meaning. Reply with only 'true' or 'false'.",
+        },
+        {
           role: 'user',
-          content: prompt,
+          content: `Is "${word}" a valid Vietnamese word?`,
         },
       ],
       temperature: 0.3,
     });
 
+    console.log(response.choices[0].message.content);
+
     return (
-      response.choices[0].message.content?.toLowerCase().includes('có') ?? false
+      response.choices[0].message.content?.toLowerCase() === 'true'
     );
   } catch (error) {
     console.error('Error validating word:', error);

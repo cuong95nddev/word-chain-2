@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import React, { useState } from 'react';
 import { Player } from '@/types';
 import Timer from './Timer';
 import WordChain from './WordChain';
 import PlayerStats from './PlayerStats';
-import ChatBox from './ChatBox';
-import { useWordValidation } from '@/hooks/useWordValidation';
-import { DEFAULT_GAME_SETTINGS } from '@/lib/constants';
 import { useGameState } from '@/hooks/useGameState';
 
 interface GameBoardProps {
@@ -18,67 +14,17 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
   const [inputWord, setInputWord] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [messages, setMessages] = useState<any[]>([]);
-  const supabase = useSupabaseClient();
   const { game } = useGameState(gameId);
-  const { validateGameWord, isValidating } = useWordValidation(
-    game?.settings || DEFAULT_GAME_SETTINGS
-  );
-
-  // Subscribe to chat messages
-  useEffect(() => {
-    const channel = supabase
-      .channel(`game_chat:${gameId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'game_chats',
-          filter: `game_id=eq.${gameId}`,
-        },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [gameId, supabase]);
-
-  // Load initial messages
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const { data } = await supabase
-        .from('game_chats')
-        .select('*')
-        .eq('game_id', gameId)
-        .order('created_at', { ascending: true });
-
-      if (data) {
-        setMessages(data);
-      }
-    };
-
-    fetchMessages();
-  }, [gameId, supabase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!game || !inputWord.trim() || isSubmitting || isValidating) return;
+    if (!game || !inputWord.trim() || isSubmitting) return;
 
     try {
       setIsSubmitting(true);
       setError(null);
 
       const word = inputWord.trim().toLowerCase();
-
-      // Validate word
-      const isValid = await validateGameWord(word, game.words);
-
-      if (!isValid) return;
 
       // Submit word
       const response = await fetch(`/api/games/${gameId}/play`, {
@@ -118,12 +64,6 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
       const data = await response.json();
       throw new Error(data.error);
     }
-  };
-
-  const getNextPlayerId = (players: Player[], currentId: string): string => {
-    const currentIndex = players.findIndex((p) => p.id === currentId);
-    const nextIndex = (currentIndex + 1) % players.length;
-    return players[nextIndex].id;
   };
 
   if (!game) {
@@ -206,21 +146,21 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
                         : 'Nhập từ bất kỳ để bắt đầu...'
                       : 'Đang chờ lượt...'
                   }
-                  disabled={!isCurrentTurn || isSubmitting || isValidating}
+                  disabled={!isCurrentTurn || isSubmitting}
                 />
                 {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
               </div>
 
               <button
                 type="submit"
-                disabled={!isCurrentTurn || isSubmitting || isValidating}
+                disabled={!isCurrentTurn || isSubmitting}
                 className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-colors ${
-                  isCurrentTurn && !isSubmitting && !isValidating
+                  isCurrentTurn && !isSubmitting
                     ? 'bg-blue-500 hover:bg-blue-600'
                     : 'bg-gray-400 cursor-not-allowed'
                 }`}
               >
-                {isSubmitting || isValidating ? (
+                {isSubmitting ? (
                   <span className="flex items-center justify-center">
                     <svg
                       className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
@@ -242,7 +182,7 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    {isValidating ? 'Đang kiểm tra...' : 'Đang gửi...'}
+                    Đang kiểm tra...
                   </span>
                 ) : (
                   'Gửi'
@@ -267,21 +207,6 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
             </ul>
           </div>
         </div>
-      </div>
-
-      {/* Chat Box */}
-      <div className="mt-8">
-        <ChatBox
-          gameId={gameId}
-          messages={messages}
-          onSendMessage={async (message) => {
-            await supabase.from('game_chats').insert({
-              game_id: gameId,
-              user_id: currentPlayer.id,
-              message,
-            });
-          }}
-        />
       </div>
     </div>
   );

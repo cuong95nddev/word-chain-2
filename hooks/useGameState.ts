@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { Game, Player } from '@/types';
+import { Game } from '@/types';
 import { useGameSubscription } from '@/hooks/useGameSubscription';
 
 export function useGameState(gameId: string) {

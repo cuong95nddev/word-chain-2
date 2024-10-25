@@ -161,14 +161,14 @@ export default function Page() {
                 </h2>
                 {userProfile && (
                   <div className="mt-1 text-sm text-gray-500 space-x-4">
-                    <span>{userProfile.totalGames} trận đã chơi</span>
+                    <span>{userProfile.total_games} trận đã chơi</span>
                     <span>•</span>
-                    <span>{userProfile.totalWins} chiến thắng</span>
+                    <span>{userProfile.total_wins} chiến thắng</span>
                     <span>•</span>
                     <span>
-                      {userProfile.totalGames > 0
+                      {userProfile.total_games > 0
                         ? `${Math.round(
-                          (userProfile.totalWins / userProfile.totalGames) * 100
+                          (userProfile.total_wins / userProfile.total_games) * 100
                         )}% tỉ lệ thắng`
                         : '0% tỉ lệ thắng'}
                     </span>

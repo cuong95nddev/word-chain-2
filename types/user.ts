@@ -9,20 +9,20 @@ export interface User {
 
 export interface UserProfile {
   id: string;
-  userId: string;
+  user_id: string;
   username: string;
-  displayName: string;
-  totalGames: number;
-  totalWins: number;
-  totalScore: number;
+  display_name: string;
+  total_games: number;
+  total_wins: number;
+  total_score: number;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UserStats {
-  totalGames: number;
-  totalWins: number;
-  totalScore: number;
-  winRate: number;
-  averageScore: number;
+  total_games: number;
+  total_wins: number;
+  total_score: number;
+  win_rate: number;
+  average_score: number;
 }
