@@ -140,9 +140,13 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
                   placeholder={
                     isCurrentTurn
                       ? game.words.length > 0
-                        ? `Nhập từ bắt đầu bằng chữ "${game.words[
-                            game.words.length - 1
-                          ].text.slice(-1)}"`
+                        ? (() => {
+                            const lastWord =
+                              game.words[game.words.length - 1].text;
+                            const lastWords = lastWord.split(' ');
+                            const lastChar = lastWords[lastWords.length - 1];
+                            return `Nhập từ bắt đầu bằng "${lastChar}"`;
+                          })()
                         : 'Nhập từ bất kỳ để bắt đầu...'
                       : 'Đang chờ lượt...'
                   }

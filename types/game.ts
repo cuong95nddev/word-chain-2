@@ -46,6 +46,7 @@ export interface Game {
   last_word_at: number;
   host_id: string;
   winner_id?: string;
+  round: number;
 }
 
 export interface ChatMessage {

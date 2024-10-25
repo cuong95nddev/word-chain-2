@@ -42,7 +42,7 @@ export default async function handler(
     }
 
     // Validate word length
-    if (word.length < game.settings.min_word_length) {
+    if (word.split(" ").length < game.settings.min_word_length) {
       return res.status(400).json({
         error: `Từ phải có ít nhất ${game.settings.min_word_length} ký tự`,
       });
@@ -69,8 +69,13 @@ export default async function handler(
     // Check if word follows the chain rule
     if (game.words.length > 0) {
       const lastWord = game.words[game.words.length - 1].text;
-      const lastChar = lastWord[lastWord.length - 1];
-      if (word[0].toLowerCase() !== lastChar.toLowerCase()) {
+      const lastWords = lastWord.split(' ');
+      const lastChar = lastWords[lastWords.length - 1];
+
+      const firstWords = word.split(' ');
+      const firstChar = firstWords[0];
+
+      if (firstChar.toLowerCase() !== lastChar.toLowerCase()) {
         return res.status(400).json({
           error: `Từ phải bắt đầu bằng chữ "${lastChar}"`,
         });
@@ -78,10 +83,7 @@ export default async function handler(
     }
 
     // Validate word with OpenAI
-    const isValid = await validateWord(
-      word,
-      game.words.length > 0 ? game.words[game.words.length - 1].text : undefined
-    );
+    const isValid = await validateWord(word);
 
     if (!isValid) {
       return res.status(400).json({ error: 'Từ không hợp lệ' });

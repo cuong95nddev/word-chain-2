@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import GameBoard from '@/components/GameBoard';
 import WaitingRoom from '@/components/WaitingRoom';
@@ -15,7 +15,7 @@ export default function GamePage() {
   const gameId = params?.id as string;
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { game } = useGameState(gameId);
+  const { game, isLoading } = useGameState(gameId);
   const user = useUser();
 
   useEffect(() => {
@@ -52,6 +52,14 @@ export default function GamePage() {
       }
     })();
   }, [game, user]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
 
   if (error) {
     return (
