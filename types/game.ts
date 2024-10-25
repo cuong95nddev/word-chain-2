@@ -25,6 +25,7 @@ export interface GameSettings {
   max_word_length?: number;
   language: 'vi' | 'en';
   allow_repeat_words: boolean;
+  win_points: number;
   points_per_letter: number;
   bonus_points: {
     long_word: number;

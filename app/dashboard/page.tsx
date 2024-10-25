@@ -89,36 +89,20 @@ export default function Page() {
     try {
       setCreateLoading(true);
 
-      const { data, error } = await supabase
-        .from('games')
-        .insert({
-          host_id: user.id,
-          players: [{
-            id: user.id,
-            name: userProfile?.username || user.email?.split('@')[0] || 'Unknown',
-            score: 0,
-            is_active: true
-          }],
-          settings: {
-            max_players: 4,
-            time_limit: 30,
-            win_points: 200,
-            min_word_length: 2,
-            max_word_length: 20,
-            language: 'vi',
-            allow_repeat_words: false,
-            points_per_letter: 10,
-            bonus_points: {
-              long_word: 20,
-              quick_answer: 15,
-              streak: 25
-            }
-          }
-        })
-        .select()
-        .single();
+      const response = await fetch(`/api/games/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
+      });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
       router.push(`/games/${data.id}`);
     } catch (error) {
       console.error('Error creating room:', error);
@@ -153,7 +137,11 @@ export default function Page() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <UserAvatar
-                username={userProfile?.username || user?.email?.split('@')[0] || 'Unknown'}
+                username={
+                  userProfile?.username ||
+                  user?.email?.split('@')[0] ||
+                  'Unknown'
+                }
                 size="lg"
               />
               <div>
@@ -169,8 +157,9 @@ export default function Page() {
                     <span>
                       {userProfile.total_games > 0
                         ? `${Math.round(
-                          (userProfile.total_wins / userProfile.total_games) * 100
-                        )}% tỉ lệ thắng`
+                            (userProfile.total_wins / userProfile.total_games) *
+                              100
+                          )}% tỉ lệ thắng`
                         : '0% tỉ lệ thắng'}
                     </span>
                   </div>
@@ -228,7 +217,9 @@ export default function Page() {
         {/* Room List */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-medium text-gray-900">Danh sách phòng</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              Danh sách phòng
+            </h3>
           </div>
 
           {rooms.length === 0 ? (

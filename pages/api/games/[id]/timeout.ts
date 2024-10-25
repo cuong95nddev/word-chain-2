@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '@/lib/supabase';
 import { getNextPlayer } from '@/lib/utils';
+import { generateFirstWord } from '@/lib/openai';
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,10 +32,14 @@ export default async function handler(
     }
 
     if (game.current_player_id !== playerId) {
-      return res.status(400).json({ error: 'Only the current player can timeout' });
+      return res
+        .status(400)
+        .json({ error: 'Only the current player can timeout' });
     }
 
     const nextPlayer = getNextPlayer(game);
+
+    const firstWord = await generateFirstWord();
 
     // Update game state
     const updatedGame = await supabase
@@ -42,7 +47,11 @@ export default async function handler(
       .update({
         current_player_id: nextPlayer.id,
         last_word_at: new Date(),
-        words: [],
+        words: [
+          {
+            text: firstWord,
+          },
+        ],
       })
       .eq('id', id)
       .single();

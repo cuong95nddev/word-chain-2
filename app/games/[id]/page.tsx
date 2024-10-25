@@ -15,7 +15,7 @@ export default function GamePage() {
   const gameId = params?.id as string;
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { game, isLoading } = useGameState(gameId, "page");
+  const { game, isLoading } = useGameState(gameId, 'page');
   const user = useUser();
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function GamePage() {
     })();
   }, [game, user]);
 
-  if (isLoading) {
+  if (isLoading || !currentPlayer) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
@@ -80,7 +80,7 @@ export default function GamePage() {
     );
   }
 
-  if (!game || !currentPlayer) {
+  if (!game) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

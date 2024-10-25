@@ -107,7 +107,7 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
             <Timer
               duration={game.settings.time_limit}
               onTimeout={handleTimeOut}
-              isActive={isCurrentTurn}
+              isActive={isCurrentTurn && !isSubmitting}
             />
           )}
 
@@ -208,6 +208,9 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
               {!game.settings.allow_repeat_words && (
                 <li>Không được dùng lại từ đã sử dụng</li>
               )}
+              <li>
+                Thắng cuộc khi đạt: {game.settings.win_points} điểm
+              </li>
             </ul>
           </div>
         </div>
