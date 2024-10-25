@@ -8,6 +8,7 @@ export const DEFAULT_GAME_SETTINGS: GameSettings = {
   language: 'vi',
   allow_repeat_words: false,
   points_per_letter: 10,
+  win_points: 1000,
   bonus_points: {
     long_word: 20,
     quick_answer: 15,
