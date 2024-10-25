@@ -6,6 +6,10 @@ export const calculateWordScore = (
   settings: GameSettings,
   previousWords: Word[]
 ): number => {
+  if (previousWords.length === 0) {
+    return 0;
+  }
+
   let score = word.length * settings.points_per_letter;
 
   if (word.length > 5) {

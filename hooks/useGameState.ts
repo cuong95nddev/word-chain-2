@@ -3,7 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Game } from '@/types';
 import { useGameSubscription } from '@/hooks/useGameSubscription';
 
-export function useGameState(gameId: string) {
+export function useGameState(gameId: string, key: string) {
   const supabase = useSupabaseClient();
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +26,7 @@ export function useGameState(gameId: string) {
     }
   }, [gameId, supabase]);
 
-  useGameSubscription(gameId, (updatedGame) => {
+  useGameSubscription(key, gameId, (updatedGame) => {
     setGame(updatedGame);
   });
 

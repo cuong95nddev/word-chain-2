@@ -14,7 +14,7 @@ export default function GameBoard({ gameId, currentPlayer }: GameBoardProps) {
   const [inputWord, setInputWord] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { game } = useGameState(gameId);
+  const { game } = useGameState(gameId, "gameboard");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

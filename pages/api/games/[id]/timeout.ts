@@ -42,6 +42,7 @@ export default async function handler(
       .update({
         current_player_id: nextPlayer.id,
         last_word_at: new Date(),
+        words: [],
       })
       .eq('id', id)
       .single();

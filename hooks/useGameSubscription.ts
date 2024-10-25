@@ -3,6 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Game } from '@/types';
 
 export function useGameSubscription(
+  key: string,
   gameId: string,
   onUpdate: (game: Game) => void
 ) {
@@ -14,7 +15,7 @@ export function useGameSubscription(
     }
 
     const subscription = supabase
-      .channel(`game:${gameId}`)
+      .channel(`game:${gameId}:${key}`)
       .on(
         'postgres_changes',
         {

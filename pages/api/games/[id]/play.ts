@@ -53,7 +53,7 @@ export default async function handler(
       word.length > game.settings.max_word_length
     ) {
       return res.status(400).json({
-        error: `Từ không được dài quá ${game.settings.maxWordLength} ký tự`,
+        error: `Từ không được dài quá ${game.settings.max_word_length} ký tự`,
       });
     }
 
@@ -105,16 +105,6 @@ export default async function handler(
     const nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
     const nextPlayerId = players[nextPlayerIndex].id;
 
-    // Check for game end conditions
-    let gameStatus = game.status;
-    let winnerId = null;
-    // if (timeElapsed >= game.settings.time_limit) {
-    //   gameStatus = 'finished';
-    //   // Find player with highest score
-    //   const highestScore = Math.max(...players.map((p) => p.score));
-    //   const winner = players.find((p) => p.score === highestScore);
-    //   winnerId = winner?.id;
-    // }
 
     // Update player stats
     const updatedPlayers = players.map((p) => {
@@ -129,6 +119,18 @@ export default async function handler(
       }
       return p;
     });
+
+
+    // Check for game end conditions
+    let gameStatus = game.status;
+    let winnerId = null;
+
+    const highestScore = Math.max(...updatedPlayers.map((p) => p.score));
+    if (highestScore >= game.settings.win_points) {
+      gameStatus = 'finished';
+      const winner = updatedPlayers.find((p) => p.score === highestScore);
+      winnerId = winner?.id;
+    }
 
     // Create new word record
     const newWord: Word = {

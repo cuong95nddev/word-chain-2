@@ -15,7 +15,7 @@ export default function GamePage() {
   const gameId = params?.id as string;
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { game, isLoading } = useGameState(gameId);
+  const { game, isLoading } = useGameState(gameId, "page");
   const user = useUser();
 
   useEffect(() => {

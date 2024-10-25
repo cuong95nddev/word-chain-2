@@ -102,8 +102,9 @@ export default function Page() {
           settings: {
             max_players: 4,
             time_limit: 30,
+            win_points: 200,
             min_word_length: 2,
-            max_word_length: 10,
+            max_word_length: 20,
             language: 'vi',
             allow_repeat_words: false,
             points_per_letter: 10,
